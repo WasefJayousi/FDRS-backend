@@ -33,7 +33,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
-const allowedOrigins = ['http://localhost:3000', 'http://127.0.0.1:3000','https://fdrs1.up.railway.app/'];
+const allowedOrigins = ['http://localhost:3000', 'http://127.0.0.1:3000','https://fdrs1.up.railway.app'];
 // Create a custom CORS middleware that checks the origin header
 const corsOptions = {
   origin: function (origin, callback) {
