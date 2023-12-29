@@ -195,7 +195,7 @@ exports.forgot_password = [
           id: emailExists._id
         };
         const token = jwt.sign(payload, secret, { expiresIn: '20m' });
-        const link = `http://localhost:3000/reset-password/${emailExists._id}/${token}`;
+        const link = `https://fdrs1.up.railway.app/reset-password/${emailExists._id}/${token}`;
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
