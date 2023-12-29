@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Faculty = require("./models/Faculty"); // Assuming you've exported your model correctly
 
 // Connect to MongoDB (replace with your actual MongoDB URL)
-mongoose.connect("mongodb+srv://skarborani:x2jWpUxK2SbIie2a@cluster0.kpwbsp2.mongodb.net/FDRS1?retryWrites=true&w=majority", {
+mongoose.connect("mongodb://mongo:CA5c1GFHEfH41cGe--aFef5c2DabFBf3@roundhouse.proxy.rlwy.net:45241", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
