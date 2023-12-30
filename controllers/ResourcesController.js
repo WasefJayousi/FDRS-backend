@@ -229,9 +229,8 @@ exports.search_resource = asyncHandler(async (req, res, next) => {
 });
 // Delete resource middleware
 exports.deleteResource = asyncHandler(async (req, res, next) => {
-  const resourceId = req.params.id;
-
-
+  try {
+    const resourceId = req.params.id;
     const resource = await Resource.findById(resourceId);
 
     if (!resource) {
@@ -240,12 +239,23 @@ exports.deleteResource = asyncHandler(async (req, res, next) => {
 
     // Check if the user is an admin or if the resource belongs to the user
     if (req.user.isAdmin || resource.User._id.toString() === req.user._id.toString()) {
-      await Resource.findByIdAndDelete(resourceId).exec()
+      // Deleting the associated favorites and comments
+      await Favorite.deleteMany({ Resource: resource._id }).exec();
+      await Comment.deleteMany({ Resource: resource._id }).exec();
 
-      // deleting the associated favorites and comments
-      await Favorite.deleteMany({ Resource: resource._id }).exec() 
-      await comment.deleteMany({Resource:resource._id}).exec()
-      return res.status(200).json({ message: "Resource deleted successfully" });
+      // Use deleteOne for better error handling
+      const result = await Resource.deleteOne({ _id: resourceId }).exec();
+
+      if (result.deletedCount > 0) {
+        return res.status(200).json({ message: "Resource deleted successfully" });
+      } else {
+        return res.status(500).json({ message: "Failed to delete resource" });
+      }
     }
-      return res.status(403).json({ message: "Unauthorized to delete this resource" });
+
+    return res.status(403).json({ message: "Unauthorized to delete this resource" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 });
