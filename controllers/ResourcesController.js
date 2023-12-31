@@ -60,7 +60,19 @@ exports.Resource_create_post = [
   body("title", "Title must not be empty!")
     .trim()
     .isLength({ min: 1 })
-    .escape(),
+    .escape()
+    .custom(async(title)=>
+    {
+      try {
+        const titleExists = await Resource.findOne({Title:title})
+        if(titleExists)
+        {
+          throw new Error('Resource already exists.')
+        }
+      } catch (error) {
+        throw new error(error)
+      }
+    }),
   body("firstname", "Author firstname must not be empty!")
     .trim()
     .isLength({ min: 1 })
