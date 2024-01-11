@@ -196,10 +196,6 @@ exports.cover_download = asyncHandler(async (req, res, next) => {
 
 
 
-
-
-
-  
 exports.search_resource = asyncHandler(async (req, res, next) => {
   const searchTerm = req.query.term;
 
