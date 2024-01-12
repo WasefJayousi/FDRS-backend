@@ -8,6 +8,7 @@ const path  = require("path")
 const { upload } = require('../multerconfig');
 const { comment } = require("./CommentController")
 const fs = require('fs')
+const { title } = require("process")
 
 
 // Get all resources
@@ -196,43 +197,49 @@ exports.cover_download = asyncHandler(async (req, res, next) => {
 
 
 
+
+
+
+  
 exports.search_resource = asyncHandler(async (req, res, next) => {
   const searchTerm = req.query.term;
-
+  const facultyID = req.params.id
   // Implement your search query based on the searchTerm
   // Search by both author's name and title using a case-insensitive text search
   console.log(searchTerm)
   const searchResults = await Resource.find({
-    $or: [
-      { Title: { $regex: searchTerm, $options: 'i' }},  // Case-insensitive search for title
+    $and: [
+      { Faculty: facultyID }, // Add this line to filter by facultyID
       {
         $or: [
+          { Title: { $regex: searchTerm, $options: 'i' } }, // Case-insensitive search for title
           {
-            fullname: {
-              $regex: searchTerm,
-              $options: 'i'
-            }
-          },
-          {
-            $expr: {
-              $regexMatch: {
-                input: { $concat: ['$Author_first_name', ' ', '$Author_last_name'] },
-                regex: searchTerm,
-                options: 'i'
-              }
-            }
-          }
-        ]
-      }
-    ]
+            $or: [
+              {
+                fullname: {
+                  $regex: searchTerm,
+                  $options: 'i'
+                }
+              },
+              {
+                $expr: {
+                  $regexMatch: {
+                    input: { $concat: ['$Author_first_name', ' ', '$Author_last_name'] },
+                    regex: searchTerm,
+                    options: 'i'
+                  }}
+              }]
+          }]
+      }]
   });
 
 
   // Filter out resources with null ResourceAuthor (unpopulated authors)
   if (searchResults.length === 0) {
+    console.log(searchResults)
     return res.status(404).json({ message: 'No matching resources found' });
   }
-
+  console.log(searchResults)
   res.status(200).json(searchResults);
 });
 // Delete resource middleware
