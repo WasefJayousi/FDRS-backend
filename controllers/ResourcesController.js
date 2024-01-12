@@ -209,7 +209,8 @@ exports.search_resource = asyncHandler(async (req, res, next) => {
   console.log(searchTerm)
   const searchResults = await Resource.find({
     $and: [
-      { Faculty: facultyID }, // Add this line to filter by facultyID
+      { Faculty: facultyID },// Add this line to filter by facultyID
+      {isAuthorized:true}, 
       {
         $or: [
           { Title: { $regex: searchTerm, $options: 'i' } }, // Case-insensitive search for title
