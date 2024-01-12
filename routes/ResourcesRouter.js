@@ -15,7 +15,7 @@ router.get('/download/:id' , Resource.pdf_download)
 //get a search
 router.get('/cover/:id' , Resource.cover_download)
 
-router.get('/search' , Resource.search_resource)
+router.get('/search/:id' , Resource.search_resource)
 //Delete resource
 router.delete('/delete/:id' ,passport.authenticate('jwt', { session: false }),Resource.deleteResource )
 module.exports = router;
