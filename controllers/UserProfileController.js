@@ -12,7 +12,7 @@ const nodemailer = require('nodemailer');
 exports.profile = asyncHandler(async (req, res, next) => {
     try {
       const user = await Users.findById(req.user._id).exec();
-      const resources = await Resource.find({ User: req.user._id }).populate("User").exec(); 
+      const resources = await Resource.find({ User: req.user._id , isAuthorized:true }).populate("User").exec(); 
       const favorites = await UserFavs.find({ User: req.user._id }).populate("Resource").exec(); 
   
       const profileData = {
