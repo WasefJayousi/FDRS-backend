@@ -64,7 +64,7 @@ exports.admin_acceptance = asyncHandler(async (req, res, next) => {
                     subject: 'Resource Approval Status',
                     attachments: [{
                         filename: 'logo.png',
-                        path: './LOGO/anas logo red png.png',
+                        path: './LOGO/logo.png',
                         cid: 'logo'
                     }],
                 };
@@ -119,7 +119,7 @@ exports.admin_acceptance = asyncHandler(async (req, res, next) => {
                 subject: 'Resource Approval Status',
                 attachments: [{
                     filename: 'logo.png',
-                    path: './LOGO/anas logo red png.png',
+                    path: './LOGO/logo.png',
                     cid: 'logo'
                 }],
                 text: 'Your resource has been declined.'

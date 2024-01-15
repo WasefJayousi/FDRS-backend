@@ -210,7 +210,7 @@ exports.forgot_password = [
             subject: 'Reset password link',
             attachments: [{
               filename: 'logo.png',
-              path: './LOGO/anas logo red png.png',
+              path: './LOGO/logo.png',
               cid: 'logo'
             }],
             html: `
