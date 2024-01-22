@@ -59,13 +59,11 @@ exports.Update_Comment = [
     const comment = await Comment.findById(commentId).exec();
 
     if (!comment) {
-      console.log(`Comment with ID ${commentId} not found.`);
       return res.status(404).json({ message: "Comment not found" });
     }
 
     // Check if the user making the request matches the user ID associated with the comment
     if (comment.User._id.toString() !== req.user._id.toString()) {
-      console.log(`User ${req.user._id} is unauthorized to update comment ${commentId}.`);
       return res.status(403).json({ message: "Unauthorized to Update this Comment" });
     }
 
@@ -77,12 +75,9 @@ exports.Update_Comment = [
     ).exec();
 
     if (updatedComment) {
-      console.log(`Comment with ID ${commentId} updated successfully.`);
       return res.status(200).json({ message: "Comment Updated successfully", updatedComment });
     } else {
-      console.log(`Failed to update comment with ID ${commentId}.`);
       return res.status(500).json({ message: "Failed to update comment" });
     }
   })
 ];
-

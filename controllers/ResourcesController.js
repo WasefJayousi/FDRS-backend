@@ -14,12 +14,9 @@ const { title } = require("process")
 // Get all resources
 exports.resource_list = asyncHandler(async (req, res, next) => {
   const FacultyID = req.params.id;
-  console.log('Faculty ID received:', FacultyID);
-
   try {
     const faculty = await Faculty.findById(FacultyID);
     if (!faculty) {
-      console.log('Faculty not found');
       return res.status(404).json({ error: 'Faculty not found' });
     }
 
@@ -68,7 +65,7 @@ exports.Resource_create_post = [
         const titleExists = await Resource.findOne({Title:title})
         if(titleExists)
         {
-          throw new Error('Resource already exists.')
+          return res.status(409).json('Title already exists')
         }
       } catch (error) {
         throw new error(error)
@@ -95,7 +92,6 @@ exports.Resource_create_post = [
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       // There are errors. Return JSON response with error messages.
-      console.log({error : req.body})
       return res.status(400).json({ errors: errors.array()});
     }
     try {
@@ -126,7 +122,6 @@ exports.Resource_create_post = [
 
     } catch (err) {
       // Handle any errors that occur during author or resource creation.
-      console.log("hhhh");
       console.error(err);
       res.status(500).json({ err:err,error: "Internal Server Error" });
     }
@@ -147,8 +142,6 @@ exports.pdf_download = asyncHandler(async (req, res, next) => {
     }
 
 
-    // Log the file path for debugging purposes
-    console.log('File Path:', resource.file_path);
 
     // Check if the file exists before attempting to download
     if (fs.existsSync(resource.file_path)) {
@@ -178,7 +171,6 @@ exports.cover_download = asyncHandler(async (req, res, next) => {
 
 
     // Log the file path for debugging purposes
-    console.log('File Path:', resource.Cover);
 
     // Check if the file exists before attempting to download
     if (fs.existsSync(resource.Cover)) {
@@ -206,7 +198,6 @@ exports.search_resource = asyncHandler(async (req, res, next) => {
   const facultyID = req.params.id
   // Implement your search query based on the searchTerm
   // Search by both author's name and title using a case-insensitive text search
-  console.log(searchTerm)
   const searchResults = await Resource.find({
     $and: [
       { Faculty: facultyID },// Add this line to filter by facultyID
@@ -237,10 +228,8 @@ exports.search_resource = asyncHandler(async (req, res, next) => {
 
   // Filter out resources with null ResourceAuthor (unpopulated authors)
   if (searchResults.length === 0) {
-    console.log(searchResults)
     return res.status(404).json({ message: 'No matching resources found' });
   }
-  console.log(searchResults)
   res.status(200).json(searchResults);
 });
 // Delete resource middleware

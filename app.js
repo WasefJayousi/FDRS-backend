@@ -8,6 +8,7 @@ const commentRouter = require('./routes/commentRouter')
 const favoriteRouter = require('./routes/FavoriteRouter')
 const UserRouter = require('./routes/UsersRouter')
 const feedbackrouter = require('./routes/FeedBackRouter')
+const compression = require("compression");
 const passport = require('passport');
 const cors = require("cors");
 require("./passport-config")(passport);
@@ -52,6 +53,7 @@ const app = express();
 
 
 // view engine setup
+app.use(compression()); // Compress all routes
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 

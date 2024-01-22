@@ -74,7 +74,7 @@ exports.register = [
 exports.login = asyncHandler(async (req, res, next) => {
     const user = await Users.findOne({
       $or: [
-        { Username: req.body.username },
+        { Username: { $regex: new RegExp(req.body.username, 'i') } },
         { Email: req.body.email }
       ]
     });
@@ -125,7 +125,6 @@ const user = await Users.findOne({ refreshToken: refreshToken }).exec();
 
 exports.refresh_token = async (req, res) => {
   const { refreshToken } = req.body;
-  console.log('Refresh token: ', refreshToken);
 
   // Check if the refreshToken is provided
   if (!refreshToken) {
@@ -135,7 +134,6 @@ exports.refresh_token = async (req, res) => {
   try {
       // Verify the provided refresh token
       const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
-      console.log('Token content: ', decoded);
 
       // Find the user associated with the refresh token
       const user = await Users.findById(decoded.user._id);
@@ -180,7 +178,6 @@ exports.forgot_password = [
       }),
       asyncHandler(async (req, res, next) => {
         const emailExists = await Users.findOne({ Email: req.body.email });
-        console.log(req.body);
         
         if (!emailExists) {
           // Handle the case where the email doesn't exist
@@ -274,7 +271,6 @@ exports.forgot_password = [
               return res.status(500).json({ message: "Email sending failed. Please try again later." });
             } else {
               // Email was sent successfully
-              console.log('Email sent: ' + info.response);
               return res.status(200).json({ message: "Password reset link has been sent to your email." });
             }
           });
@@ -307,7 +303,6 @@ exports.post_reset_password =[
         // Update the user's password
         const updatedUser = await Users.findByIdAndUpdate(id, { $set: { Password: hashedPassword } }, { new: true });
         await updatedUser.save();
-        console.log(updatedUser);
         if (updatedUser) {
             return res.status(201).json({ message: "Password updated successfully" });
         } else {

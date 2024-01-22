@@ -71,15 +71,14 @@ exports.admin_acceptance = asyncHandler(async (req, res, next) => {
     
                 // Set the email message based on the value of flag
                 if (flag) {
-                    mailOptions.text = 'Your resource has been approved.';
+                    mailOptions.text = `Your resource ${resource.Title} has been approved `;
                 } else {
-                    mailOptions.text = 'Your resource has been declined.';
+                    mailOptions.text = `Your resource ${resource.Title} has been declined.`;
                 }
     
                 // Use a try-catch block to handle potential asynchronous issues
                 try {
                     const info = await transporter.sendMail(mailOptions);
-                    console.log('Email sent:', info.response);
                     return res.status(200).json({ accepted: "Resource accepted", data: resource, message: "Email sent to the user" });
                 } catch (error) {
                     console.error(error);
@@ -130,7 +129,6 @@ exports.admin_acceptance = asyncHandler(async (req, res, next) => {
                     console.error(error);
                     return res.status(500).json({ message: "Email sending failed. Please try again later." });
                 } else {
-                    console.log('Email sent: ' + info.response);
                     return res.status(200).json({ declined: "Resource declined", message: "Email sent to the user" });
                 }
             });
@@ -178,7 +176,7 @@ exports.updateProfile = [
             if (req.body.newUsername && req.body.newUsername !== user.Username) {
                 const usernameExists = await Users.findOne({ Username: req.body.newUsername });
                 if (usernameExists && usernameExists._id.toString() !== req.user._id.toString()) {
-                    throw new Error('Username already exists');
+                    return res.status(409).json({message:'Username already exists'})
                 }
                 user.Username = req.body.newUsername;
             }
@@ -187,7 +185,7 @@ exports.updateProfile = [
             if (req.body.newEmail && req.body.newEmail !== user.Email) {
                 const emailExists = await Users.findOne({ Email: req.body.newEmail });
                 if (emailExists && emailExists._id.toString() !== req.user._id.toString()) {
-                    throw new Error('Email already exists');
+                    return res.status(409).json('Email already exists')
                 }
                 user.Email = req.body.newEmail;
             }
